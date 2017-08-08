@@ -17,11 +17,23 @@ function jwt_middleware(next){
     throw new Error("Not implemented yet");
 }
 
+
+var crypto = require('crypto');
+/**
+ * 
+ * @param {String} val 
+ */
+function calc_hash(val){
+    var hash = crypto.createHash('sha256');
+    hash.update(val);
+    return hash.digest('hex');
+}
+
+
 module.exports = {
     gen_token:gen_token,
-    check:check
+    check:check,
+    calc_hash: calc_hash
 };
 
-var tk = gen_token({nome:"yves"});
 
-check(tk);

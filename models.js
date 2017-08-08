@@ -1,14 +1,27 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
-
+/**
+ * 
+ * @param {String} val 
+ */
 function calc_hash(val){
     var hash = crypto.createHash('sha256');
     hash.update(val);
     return hash.digest('hex');
 }
 
+var retrievePassSchema = new mongoose.Schema(
+    {
+        key:{type:String, required:true},
+        data_solicitacao:{type:Date, required:true},
+        data_execucao:{type:Date}
+    }
+);
+
+
 var userSchema = new mongoose.Schema(
     {
+        
         username:{type:String, required : true, index:{unique:true}},
         password:{type:String, required : true},
         email:
@@ -23,7 +36,8 @@ var userSchema = new mongoose.Schema(
                 },
                 message: "formato de email inválido"
             }
-        }
+        },
+        new_pass_request : retrievePassSchema
     }
 );
 
@@ -45,15 +59,7 @@ userSchema.methods.comparePassword = function(candidate, cb){
 
 var Usuario = mongoose.model('usuario', userSchema);
 
-var retrievePassSchema = new mongoose.Schema(
-    {
-        user_id : {type:mongoose.Types.ObjectId, refer:'User', required:true},
-        key:{type:String, required:true},
-        email:{type:String, required:true},
-        data_solicitacao:{type:Date, required:true},
-        data_execucao:{type:Date, required:true}
-    }
-);
+
 
 exports.User = Usuario;
 
